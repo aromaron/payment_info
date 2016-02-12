@@ -1,5 +1,5 @@
 // Payment Info Component
-// Author: Zachary Forrest, modified by Brad Frost
+// Author: Zachary Forrest, modified by Nora Alvarado
 // Requires: jQuery, Modernizer
 
 (function ($) {
