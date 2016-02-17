@@ -1,6 +1,6 @@
 // Payment Info Component
-// Author: Zachary Forrest, modified by Brad Frost
-// Requires: jQuery, Modernizer, jQuery.inputmask
+// Author: Zachary Forrest, modified by Nora Alvarado
+// Requires: jQuery, Modernizer
 
 (function ($) {
 
@@ -87,15 +87,14 @@
 
 				// Check the card type to see if it's an Amex. If it is, update the mask to reflect
 				// the number groupings that Amex uses. Also update the CVV. Amex requires four digits
-				// instead of three. We have to reinitialize the inputmask() plugin, especially useful
-				// if the user is switching our the number they want to use more than once.
+				// instead of three.
 
 				if (ccType === "amex") {
-					el.inputmask({ mask: "9999 999999 99999", oncomplete: helpers.creditCardComplete });
-					$("." + opts.cardCvvClass).inputmask({ mask: "9999", oncomplete: helpers.cvvComplete });
+					el.mask("0000 000000 00000", { onComplete: helpers.creditCardComplete });
+					$("." + opts.cardCvvClass).mask("000", { onComplete: helpers.cvvComplete });
 				} else {
-					el.inputmask({ mask: "9999 9999 9999 9999", oncomplete: helpers.creditCardComplete });
-					$("." + opts.cardCvvClass).inputmask({ mask: "999", oncomplete: helpers.cvvComplete });
+					el.mask("0000 0000 0000 0000", { onComplete: helpers.creditCardComplete });
+					$("." + opts.cardCvvClass).mask("000", { onComplete: helpers.cvvComplete });
 				}
 
 				// If the credit card value ever becomes empty, make sure the corresponding expiration date,
@@ -121,7 +120,7 @@
 
 				// We need to get the credit card field and the unmasked value of the field.
 				var element = $("." + opts.cardNumberClass),
-					uvalue = element.inputmask("unmaskedvalue"),
+					uvalue = element.cleanVal(),
 					ccType = helpers.getCreditCardType(uvalue);
 
 				// Let's make sure the card is valid
@@ -164,14 +163,12 @@
 						element
 							.data("ccNumber", uvalue)
 							.val(uvalue.substr(uvalue.length - 4, uvalue.length));
-
 					}
 
 				});
 
 				// Once this function is fired, we need to add a "transitioning" class to credit
 				// card element so that we can take advantage of our CSS animations.
-
 				element.addClass("transitioning-out");
 
 				// We have to set a timeout so that we give our animations time to finish. We have to
@@ -285,30 +282,27 @@
 					.addClass("full")
 					.unbind("keydown blur")
 					.bind("keydown", function (e) {
-						if (e.keyCode === 8 || e.keyCode === 9) {
-							if ($(this).val() === "") {
-								$(this).removeClass("full");
-								if (window.navigator.standalone || !Modernizr.touch) {
-									$("." + opts.cardExpirationClass).focus();
+            if (e.keyCode === 8 && $(this).val() === "") {
+              $(this).removeClass("full");
+              if (window.navigator.standalone || !Modernizr.touch) {
+                $("." + opts.cardExpirationClass).focus();
 
-									// Update instruction message
-									helpers.updateInstruction(opts.messageExpiration);
-								}
-							}
-							$("." + opts.cardImageClass).removeClass("cvv2");
-						}
+                // Update instruction message
+                helpers.updateInstruction(opts.messageExpiration);
+              }
+            }
 					});
 
 				if (window.navigator.standalone || !Modernizr.touch) {
-					// Focus on the credit card expiration input.
-					$("." + opts.cardZipClass).focus();
+					setTimeout(function () {
+					  $("." + opts.cardZipClass).focus();
 
+						// Update instruction message
+					  helpers.updateInstruction(opts.messageZip);
+					}, 220);
+				}
 					// Update instruction message
 					helpers.updateInstruction(opts.messageZip);
-				}
-
-				
-
 
 			},
 
@@ -328,7 +322,7 @@
 							}
 						}
 					})
-					.inputmask({ mask: "99999" });
+					.mask("00000-000", { onComplete: helpers.zipComplete });
 
 				$("." + opts.fieldsetClass)
 					.addClass('valid');
@@ -366,7 +360,7 @@
 						// Is it the enter key?
 						if (e.keyCode === 13 || e.type === "blur") {
 
-							var uvalue = $(element).inputmask("unmaskedvalue"),
+							var uvalue = $(element).cleanVal(),
 								ccType = helpers.getCreditCardType(uvalue);
 
 							// Make sure the number length is valid
@@ -422,12 +416,15 @@
 				// Get a copy of our configuration options
 				opts = $.extend({}, $.fn.paymentInfo.defaults, options);
 
-				// Configure the jQuery.inputmask plugin
-				$.extend($.inputmask.defaults, {
-					placeholder: " ",
-					showMaskOnHover: false,
-					overrideFocus: true
-				});
+        var zipcodeOptions = {
+          onComplete: helpers.zipComplete,
+          onKeyPress: function(cep, e, field, options) {
+            var masks = ['00000-000', '0-00-00-00'];
+            var mask = (cep.length>7) ? masks[1] : masks[0];
+            $(this).find("." + opts.cardZipClass)
+							.mask(mask, zipcodeOptions)
+          }
+        }
 
 				// Loop through our fieldset, find our inputs and initialize them.
 				return this.each(function () {
@@ -437,19 +434,15 @@
 							.addClass("hide")
 						.end()
 						.find("." + opts.cardNumberClass)
-							.inputmask({ mask: "9999 9999 9999 9999" })
+							.mask("0000 0000 0000 0000", { onComplete: helpers.creditCardComplete })
 							.before("<span class='" + opts.cardImageClass + "'></span>")
 						.end()
 						.find("." + opts.cardExpirationClass)
-							.inputmask({
-								mask: "m/q",
-								clearIncomplete: true,
-								oncomplete: helpers.expirationComplete
-							})
+							.mask("00/00", { onComplete: helpers.expirationComplete  })
 							.addClass("hide")
 						.end()
 						.find("." + opts.cardCvvClass)
-							.inputmask({ mask: "999" })
+							.mask("000", { onComplete: helpers.cvvComplete } )
 							.addClass("hide")
 							.focus(function () {
 								$("." + opts.cardImageClass).addClass("cvv2");
@@ -459,10 +452,7 @@
 							})
 						.end()
 						.find("." + opts.cardZipClass)
-							.inputmask({
-								mask: "99999",
-								oncomplete: helpers.zipComplete
-							})
+							.mask('00000-000', zipcodeOptions)
 							.addClass("hide")
 						.end();
 
@@ -471,10 +461,10 @@
 								after("<span class='" + opts.cardInstructionClass + "'>"+ opts.messageEnterCardNumber + "</span>");
 						}
 
-						helpers.matchNumbers($(this).find("." + opts.cardNumberClass).eq(0));
+						helpers.matchNumbers($(this).find("." + opts.cardNumberClass));
 
 				}).unbind('.' + pluginName).bind(events, function () {
-					helpers.matchNumbers($(this).find("." + opts.cardNumberClass).eq(0));
+					helpers.matchNumbers($(this).find("." + opts.cardNumberClass));
 				});
 			},
 

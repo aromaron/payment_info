@@ -1,15 +1,21 @@
-Single-Field Credit Card Input
-=======
+Payment Info (Formerly Toscany)
+===========
 
 This is a jQuery-based, progressively-enhanced solution for creating a [single-field credit card input](http://www.lukew.com/ff/entry.asp?1667). The idea is to create a more streamlined credit card entry process.
 
-
 =======
+
 ###Instructions
-(TODO)
+- Add the _**payment_info.js**_ file to your scripts folder.
+- Add the _**payment_info.css**_ file to your stylesheets folder
 
 ###Requirements
-(TODO)
+Add this files in your project, you can download them from the following links or you can find them under the libs folder.
+
+- [Modernizr.js](http://modernizr.com/)
+- [jQuery.js](https://jquery.com)
+- [jQuery Mask](https://igorescobar.github.io/jQuery-Mask-Plugin/)
+- [Normalize.css](https://necolas.github.io/normalize.css/)
 
 ###Usage
 Your credit card form should look like this:
@@ -28,5 +34,9 @@ Your credit card form should look like this:
       </fieldset>
     </form>
 
+###Using with Rails Applications
+If you are planning to use the payment info plugin with your Rails application I suggest to use the [Payment Info Rails Gem](http://aromaron.github.io/payment_info_rails/).
+
 ###Demo
 You can find a working demo [here](http://aromaron.github.io/payment_info_rails/).
+
