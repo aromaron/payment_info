@@ -3,25 +3,13 @@ Single-Field Credit Card Input
 
 This is a jQuery-based, progressively-enhanced solution for creating a [single-field credit card input](http://www.lukew.com/ff/entry.asp?1667). The idea is to create a more streamlined credit card entry process.
 
-### August 6, 2015
-This project, while an interesting experiement, was never meant for production, and yet the amount of love I got for this idea has been astounding. If anyone wants to take it over, I'm all ears. I haven't been able to work on this for years and the project, where I'm concerned, is dead. Thanks for all the interest. 
-
-###September 2015
-Happy to announce improvements and support are on its way, so please bear with us...
 
 =======
 ###Instructions
-- Add the **_app.js_** file to your scripts folder.
-- Add the **_paymentInfo.css_** file to your stylesheets folder.
+(TODO)
 
 ###Requirements
-Add this files in your project, you can download them from the following links or you can find them under the libs folder.
-
-- [Modernizr.js](http://modernizr.com/)
-- [jQuery.js](https://jquery.com)
-- [jQuery.inputmask.js](https://github.com/RobinHerbots/jquery.inputmask)
-- [jQuery.inputmask.date.extensions.js](https://github.com/RobinHerbots/jquery.inputmask#usage)
-- [Normalize.css](https://necolas.github.io/normalize.css/)
+(TODO)
 
 ###Usage
 Your credit card form should look like this:
@@ -41,4 +29,4 @@ Your credit card form should look like this:
     </form>
 
 ###Demo
-You can find a working demo [here](http://zdfs.github.io/toscani/paymentInfo/index.html).
+You can find a working demo [here](http://aromaron.github.io/payment_info_rails/).
